@@ -3,8 +3,6 @@ package com.example.FormService.controller;
 import com.example.FormService.dto.EvaluationFormDTO;
 import com.example.FormService.dto.EvaluationFormRequestDto;
 import com.example.FormService.service.EvaluationFormService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +23,8 @@ public class EvaluationFormController {
     // CREATE
     @PreAuthorize("hasRole('QA_SUPERVISOR')")
     @PostMapping
-    public ResponseEntity<EvaluationFormDTO> create(@RequestBody EvaluationFormDTO dto) {
-        EvaluationFormDTO created = evaluationFormService.createEvaluationForm(dto);
+    public ResponseEntity<EvaluationFormDTO> create(@RequestBody EvaluationFormRequestDto requestDto) {
+        EvaluationFormDTO created = evaluationFormService.createFullEvaluationForm(requestDto);
         return ResponseEntity.ok(created);
     }
 
