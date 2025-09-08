@@ -1,6 +1,5 @@
 package com.example.FormService.model;
 
-import com.example.quality_management_service.form.enums.AnswerType;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

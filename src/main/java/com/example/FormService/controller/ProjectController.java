@@ -1,7 +1,5 @@
 package com.example.FormService.controller;
 
-import com.example.quality_management_service.form.dto.ProjectDTO;
-import com.example.quality_management_service.form.service.ProjectService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

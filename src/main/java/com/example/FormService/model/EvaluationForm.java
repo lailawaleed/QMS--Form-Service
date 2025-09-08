@@ -1,8 +1,7 @@
 package com.example.FormService.model;
 
-import com.example.quality_management_service.form.enums.CalculationMethod;
-import com.example.quality_management_service.form.enums.FormStatus;
-import com.example.quality_management_service.management.model.User;
+import com.example.FormService.enums.CalculationMethod;
+import com.example.FormService.enums.FormStatus;
 import jakarta.persistence.*;
 
 import java.time.Instant;

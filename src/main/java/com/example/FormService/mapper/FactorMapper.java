@@ -1,7 +1,7 @@
 package com.example.FormService.mapper;
 
-import com.example.quality_management_service.form.dto.FactorDto;
-import com.example.quality_management_service.form.model.Factor;
+import com.example.FormService.dto.FactorDto;
+import com.example.FormService.model.Factor;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

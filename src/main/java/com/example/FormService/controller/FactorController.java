@@ -1,6 +1,7 @@
 package com.example.FormService.controller;
 
-import com.example.quality_management_service.form.model.Factor;
+
+import com.example.FormService.model.Factor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

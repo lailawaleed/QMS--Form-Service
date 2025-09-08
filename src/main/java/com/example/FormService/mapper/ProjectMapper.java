@@ -1,8 +1,7 @@
 package com.example.FormService.mapper;
-
-import com.example.quality_management_service.form.dto.ProjectDTO;
-import com.example.quality_management_service.form.model.EvaluationForm;
-import com.example.quality_management_service.form.model.Project;
+import com.example.FormService.dto.ProjectDTO;
+import com.example.FormService.model.EvaluationForm;
+import com.example.FormService.model.Project;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -10,6 +9,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Mapper(componentModel = "spring")
 public interface ProjectMapper {
