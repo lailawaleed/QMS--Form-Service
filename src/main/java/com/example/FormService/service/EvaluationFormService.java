@@ -1,7 +1,6 @@
 package com.example.FormService.service;
 
 import com.example.FormService.dto.EvaluationFormDTO;
-import com.example.FormService.dto.EvaluationFormRequestDto;
 import com.example.FormService.mapper.EvaluationFormMapper;
 import com.example.FormService.model.*;
 import com.example.FormService.repository.CategoryRepository;
@@ -150,63 +149,5 @@ public class EvaluationFormService {
             severityGroups.get(severity).add(category);
         }
         return severityGroups;
-    }
-
-    public EvaluationFormDTO createFullEvaluationForm(EvaluationFormRequestDto requestDto) {
-        EvaluationFormDTO formDTO = new EvaluationFormDTO(
-                null,
-                requestDto.projectId(),
-                requestDto.nameEn(),
-                requestDto.nameAr(),
-                requestDto.calculationMethod(),
-                requestDto.status(),
-                requestDto.supervisorId(),
-                null,
-                null
-        );
-
-        // Create the evaluation form
-        EvaluationFormDTO createdForm = createEvaluationForm(formDTO);
-
-        // Create and associate categories
-        List<Long> categoryIds = new ArrayList<>();
-        for (var categoryReq : requestDto.categories()) {
-            Category category = new Category();
-            category.setTitle(categoryReq.title());
-            category.setWeight(categoryReq.weight());
-            // Assuming severity is fetched from DB based on ID
-            Severity severity = new Severity();
-            severity.setId(categoryReq.severityId());
-            category.setSeverity(severity);
-            category.setForm(null); // Will be set in createEvaluationForm
-
-            Category savedCategory = categoryRepository.save(category);
-            categoryIds.add(savedCategory.getId());
-        }
-
-        // Create and associate success criteria
-        List<Long> successCriteriaIds = new ArrayList<>();
-        for (var criteriaReq : requestDto.successCriteria()) {
-            SuccessCriteria criteria = new SuccessCriteria();
-            criteria.setEvaluationForm(null); // Will be set in createEvaluationForm
-
-            SuccessCriteria savedCriteria = successCriteriaRepository.save(criteria);
-            successCriteriaIds.add(savedCriteria.getId());
-        }
-
-        // Update the form with category and success criteria IDs
-        createdForm = new EvaluationFormDTO(
-                createdForm.id(),
-                createdForm.projectId(),
-                createdForm.nameEn(),
-                createdForm.nameAr(),
-                createdForm.calculationMethod(),
-                createdForm.status(),
-                createdForm.supervisorId(),
-                categoryIds,
-                successCriteriaIds
-        );
-
-        return updateEvaluationForm(createdForm.id(), createdForm).orElseThrow(() -> new RuntimeException("Failed to update evaluation form with categories and success criteria"));
     }
 }

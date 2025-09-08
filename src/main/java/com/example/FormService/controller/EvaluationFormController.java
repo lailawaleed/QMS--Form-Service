@@ -13,10 +13,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/evaluation-forms")
-@RequiredArgsConstructor
 public class EvaluationFormController {
 
+    public EvaluationFormController(EvaluationFormService evaluationFormService) {
+        this.evaluationFormService = evaluationFormService;
+    }
+
     private final EvaluationFormService evaluationFormService;
+
 
     // CREATE
     @PreAuthorize("hasRole('QA_SUPERVISOR')")
@@ -58,13 +62,5 @@ public class EvaluationFormController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean deleted = evaluationFormService.deleteEvaluationForm(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
-    }
-
-    @PreAuthorize("hasRole('QA_SUPERVISOR')")
-    @PostMapping("/full")
-    public ResponseEntity<EvaluationFormDTO> createFullEvaluationForm(
-            @RequestBody EvaluationFormRequestDto requestDto) {
-        EvaluationFormDTO created = evaluationFormService.createFullEvaluationForm(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 }

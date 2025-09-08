@@ -12,17 +12,15 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		"common"
 })
 @EnableJpaRepositories(basePackages = {
-		"com.example.FormService",
+		"com.example.FormService.repository",
 		"common.repository"
 })
 @EntityScan(basePackages = {
-		"com.qualitymanagementsystem.auth_service",
+		"com.example.FormService.model",
 		"common.model"
 })
 public class FormServiceApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(FormServiceApplication.class, args);
 	}
-
 }
