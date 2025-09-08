@@ -20,7 +20,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 //		"common.model"
 //})
 @EntityScan(basePackages = {
-        "com.example.FormService.model",
+        "com.example.FormService",
         "com.qualitymanagementsystem.auth_service",
         "common.model"
 })
