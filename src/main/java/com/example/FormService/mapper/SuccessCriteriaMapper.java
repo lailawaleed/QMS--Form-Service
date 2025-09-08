@@ -1,5 +1,7 @@
 package com.example.FormService.mapper;
 
+import com.example.FormService.dto.SuccessCriteriaDto;
+import com.example.FormService.model.SuccessCriteria;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

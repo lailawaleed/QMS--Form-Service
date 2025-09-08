@@ -1,14 +1,15 @@
 package com.example.FormService.service;
 
-import com.example.quality_management_service.form.dto.FactorDto;
-import com.example.quality_management_service.form.mapper.FactorMapper;
-import com.example.quality_management_service.form.model.Category;
-import com.example.quality_management_service.form.model.Factor;
-import com.example.quality_management_service.form.repository.CategoryRepository;
-import com.example.quality_management_service.form.repository.FactorRepository;
+import com.example.FormService.dto.FactorDto;
+import com.example.FormService.mapper.FactorMapper;
+import com.example.FormService.model.Category;
+import com.example.FormService.model.Factor;
+import com.example.FormService.repository.CategoryRepository;
+import com.example.FormService.repository.FactorRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.stream.Collectors;

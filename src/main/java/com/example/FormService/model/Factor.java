@@ -1,10 +1,12 @@
 package com.example.FormService.model;
 
+import com.example.FormService.enums.AnswerType;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Entity
 @Table(name = "factor")
