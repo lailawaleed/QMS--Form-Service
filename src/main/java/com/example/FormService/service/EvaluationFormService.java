@@ -1,6 +1,7 @@
 package com.example.FormService.service;
 
 import com.example.FormService.dto.EvaluationFormDTO;
+import com.example.FormService.dto.EvaluationFormRequestDto;
 import com.example.FormService.mapper.EvaluationFormMapper;
 import com.example.FormService.model.*;
 import com.example.FormService.repository.CategoryRepository;
@@ -150,4 +151,135 @@ public class EvaluationFormService {
         }
         return severityGroups;
     }
+
+//    public EvaluationFormDTO createFullEvaluationForm(EvaluationFormRequestDto requestDto) {
+//        EvaluationFormDTO formDTO = new EvaluationFormDTO(
+//                null,
+//                requestDto.projectId(),
+//                requestDto.nameEn(),
+//                requestDto.nameAr(),
+//                requestDto.calculationMethod(),
+//                requestDto.status(),
+//                requestDto.supervisorId(),
+//                null,
+//                null
+//        );
+//
+//        // Create the evaluation form
+//        EvaluationFormDTO createdForm = createEvaluationForm(formDTO);
+//
+//        // Create and associate categories
+//        List<Long> categoryIds = new ArrayList<>();
+//        for (var categoryReq : requestDto.categories()) {
+//            Category category = new Category();
+//            category.setTitle(categoryReq.title());
+//            category.setWeight(categoryReq.weight());
+//            // Assuming severity is fetched from DB based on ID
+//            Severity severity = new Severity();
+//            severity.setId(categoryReq.severityId());
+//            category.setSeverity(severity);
+//            category.setForm(null); // Will be set in createEvaluationForm
+//
+//            Category savedCategory = categoryRepository.save(category);
+//            categoryIds.add(savedCategory.getId());
+//        }
+//
+//        // Create and associate success criteria
+//        List<Long> successCriteriaIds = new ArrayList<>();
+//        for (var criteriaReq : requestDto.successCriteria()) {
+//            SuccessCriteria criteria = new SuccessCriteria();
+//            criteria.setEvaluationForm(null); // Will be set in createEvaluationForm
+//
+//            SuccessCriteria savedCriteria = successCriteriaRepository.save(criteria);
+//            successCriteriaIds.add(savedCriteria.getId());
+//        }
+//
+//        // Update the form with category and success criteria IDs
+//        createdForm = new EvaluationFormDTO(
+//                createdForm.id(),
+//                createdForm.projectId(),
+//                createdForm.nameEn(),
+//                createdForm.nameAr(),
+//                createdForm.calculationMethod(),
+//                createdForm.status(),
+//                createdForm.supervisorId(),
+//                categoryIds,
+//                successCriteriaIds
+//        );
+//
+//        return updateEvaluationForm(createdForm.id(), createdForm).orElseThrow(() -> new RuntimeException("Failed to update evaluation form with categories and success criteria"));
+//    }
+
+    @Transactional
+    public EvaluationFormDTO createFullEvaluationForm(EvaluationFormRequestDto requestDto) {
+        //create from
+        EvaluationForm form = new EvaluationForm();
+        form.setNameEn(requestDto.nameEn());
+        form.setNameAr(requestDto.nameAr());
+        form.setCalculationMethod(requestDto.calculationMethod());
+        form.setStatus(requestDto.status());
+
+        Project project = projectRepository.findById(requestDto.projectId())
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+        form.setProject(project);
+
+        User supervisor = userRepository.findById(requestDto.supervisorId())
+                .orElseThrow(() -> new RuntimeException("Supervisor not found"));
+        form.setSupervisor(supervisor);
+
+        form.setCreatedAt(Instant.now());
+        form.setUpdatedAt(Instant.now());
+
+        // categories
+        List<Category> categories = new ArrayList<>();
+        for (var categoryReq : requestDto.categories()) {
+            Category category = new Category();
+            category.setTitle(categoryReq.title());
+            category.setWeight(categoryReq.weight());
+
+            Severity severity = new Severity();
+            severity.setId(categoryReq.severityId());
+            category.setSeverity(severity);
+
+            category.setForm(form);
+
+            // factors
+            List<Factor> factors = new ArrayList<>();
+            for (var factorReq : categoryReq.factors()) {
+                Factor factor = new Factor();
+                factor.setQuestionText(factorReq.questionText());
+                factor.setWeight(factorReq.weight());
+                factor.setAnswerType(factorReq.answerType());
+                factor.setNotes(factorReq.notes());
+                factor.setPassAnswer(factorReq.passAnswer());
+                factor.setCategory(category);
+
+                // answer options
+                List<AnswerOption> options = new ArrayList<>();
+                for (var optionReq : factorReq.answerOptions()) {
+                    AnswerOption option = new AnswerOption();
+                    option.setValue(optionReq.value());
+                    option.setLabel(optionReq.label());
+                    option.setIsPassing(optionReq.isPassing());
+                    option.setWeight(optionReq.weight());
+                    option.setFactor(factor);
+                    options.add(option);
+                }
+                factor.setAnswerOptions(options);
+
+                factors.add(factor);
+            }
+            category.setFactors(factors);
+
+            categories.add(category);
+        }
+
+        form.setCategories(categories);
+
+
+        EvaluationForm savedForm = evaluationFormRepository.save(form);
+
+        return evaluationFormMapper.toDTO(savedForm);
+    }
+
 }

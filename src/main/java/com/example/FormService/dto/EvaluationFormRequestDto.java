@@ -11,17 +11,12 @@ public record EvaluationFormRequestDto(
         String nameEn,
         String nameAr,
         CalculationMethod calculationMethod,
-        List<CategoryRequestDto> categories
+        List<CategoryRequestDto> categories,
+        Integer supervisorId,
+        List<Long> successCriteria
 ) {
     public FormStatus status() {
         return FormStatus.ACTIVE;
     }
-
-    public Integer supervisorId() {
-        return 1; // Placeholder for actual supervisor ID retrieval logic
-    }
-
-    public Object successCriteria() {
-        return List.of(); // Placeholder for actual success criteria retrieval logic
-    }
 }
+
