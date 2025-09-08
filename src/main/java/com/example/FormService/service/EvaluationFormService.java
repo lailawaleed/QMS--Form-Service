@@ -260,7 +260,7 @@ public class EvaluationFormService {
                     AnswerOption option = new AnswerOption();
                     option.setValue(optionReq.value());
                     option.setLabel(optionReq.label());
-                    option.setIsPassing(optionReq.isPassing());
+                    option.setPassing(optionReq.isPassing());
                     option.setWeight(optionReq.weight());
                     option.setFactor(factor);
                     options.add(option);
