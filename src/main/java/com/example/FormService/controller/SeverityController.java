@@ -1,5 +1,7 @@
 package com.example.FormService.controller;
 
+import com.example.FormService.dto.SeverityDto;
+import com.example.FormService.service.SeverityService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

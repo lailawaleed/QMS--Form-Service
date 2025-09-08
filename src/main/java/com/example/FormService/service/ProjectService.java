@@ -1,9 +1,9 @@
 package com.example.FormService.service;
 
-import com.example.quality_management_service.form.dto.ProjectDTO;
-import com.example.quality_management_service.form.mapper.ProjectMapper;
-import com.example.quality_management_service.form.model.Project;
-import com.example.quality_management_service.form.repository.ProjectRepository;
+import com.example.FormService.dto.ProjectDTO;
+import com.example.FormService.model.Project;
+import com.example.FormService.mapper.ProjectMapper;
+import com.example.FormService.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;

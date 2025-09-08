@@ -36,4 +36,6 @@ public class SuccessCriteria {
 
     public BigDecimal getThreshold() { return threshold; }
     public void setThreshold(BigDecimal threshold) { this.threshold = threshold; }
+
+
 }

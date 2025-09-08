@@ -1,8 +1,8 @@
 package com.example.FormService.service;
 
-import com.example.quality_management_service.form.dto.SeverityDto;
-import com.example.quality_management_service.form.mapper.SeverityMapper;
-import com.example.quality_management_service.form.repository.SeverityRepository;
+import com.example.FormService.dto.SeverityDto;
+import com.example.FormService.mapper.SeverityMapper;
+import com.example.FormService.repository.SeverityRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 

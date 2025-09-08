@@ -3,6 +3,7 @@ package com.example.FormService.model;
 import com.example.FormService.enums.CalculationMethod;
 import com.example.FormService.enums.FormStatus;
 import jakarta.persistence.*;
+import common.model.User;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class EvaluationForm {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supervisor_id", referencedColumnName = "id", nullable = false)
-    private com.example.quality_management_service.management.model.User supervisor;
+    private User supervisor;
 
     @OneToMany(mappedBy = "form", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Category> categories = new ArrayList<>();
