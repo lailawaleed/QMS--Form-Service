@@ -8,6 +8,7 @@ import com.example.FormService.repository.CategoryRepository;
 import com.example.FormService.repository.EvaluationFormRepository;
 import com.example.FormService.repository.ProjectRepository;
 import com.example.FormService.repository.SuccessCriteriaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -212,25 +213,31 @@ public class EvaluationFormService {
 
     @Transactional
     public EvaluationFormDTO createFullEvaluationForm(EvaluationFormRequestDto requestDto) {
-        //create from
+        // Create form
         EvaluationForm form = new EvaluationForm();
         form.setNameEn(requestDto.nameEn());
         form.setNameAr(requestDto.nameAr());
         form.setCalculationMethod(requestDto.calculationMethod());
         form.setStatus(requestDto.status());
 
+        // Project check
         Project project = projectRepository.findById(requestDto.projectId())
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Project not found with id: " + requestDto.projectId()));
         form.setProject(project);
 
+        // Supervisor check (existence + role)
         User supervisor = userRepository.findById(requestDto.supervisorId())
-                .orElseThrow(() -> new RuntimeException("Supervisor not found"));
+                .filter(u -> u.getRole() != null &&
+                        "QA_SuperVisor".equalsIgnoreCase(u.getRole().getRoleName()))
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Supervisor with id " + requestDto.supervisorId() +
+                                " not found or not a QA_SuperVisor"));
         form.setSupervisor(supervisor);
 
         form.setCreatedAt(Instant.now());
         form.setUpdatedAt(Instant.now());
 
-        // categories
+        // Categories
         List<Category> categories = new ArrayList<>();
         for (var categoryReq : requestDto.categories()) {
             Category category = new Category();
@@ -240,10 +247,9 @@ public class EvaluationFormService {
             Severity severity = new Severity();
             severity.setId(categoryReq.severityId());
             category.setSeverity(severity);
-
             category.setForm(form);
 
-            // factors
+            // Factors
             List<Factor> factors = new ArrayList<>();
             for (var factorReq : categoryReq.factors()) {
                 Factor factor = new Factor();
@@ -254,7 +260,7 @@ public class EvaluationFormService {
                 factor.setPassAnswer(factorReq.passAnswer());
                 factor.setCategory(category);
 
-                // answer options
+                // Answer options
                 List<AnswerOption> options = new ArrayList<>();
                 for (var optionReq : factorReq.answerOptions()) {
                     AnswerOption option = new AnswerOption();
@@ -266,20 +272,17 @@ public class EvaluationFormService {
                     options.add(option);
                 }
                 factor.setAnswerOptions(options);
-
                 factors.add(factor);
             }
             category.setFactors(factors);
-
             categories.add(category);
         }
 
         form.setCategories(categories);
 
-
+        // Save
         EvaluationForm savedForm = evaluationFormRepository.save(form);
 
         return evaluationFormMapper.toDTO(savedForm);
     }
-
 }
