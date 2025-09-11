@@ -37,7 +37,7 @@ public class EvaluationFormController {
         return ResponseEntity.ok(updated);
     }
 
-    // DELETE (full)
+    // DELETE
     @PreAuthorize("hasRole('QA_SUPERVISOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFull(@PathVariable Long id) {
@@ -63,7 +63,7 @@ public class EvaluationFormController {
 
     // UPDATE
     @PreAuthorize("hasRole('QA_SUPERVISOR')")
-    @PutMapping("/{id}")
+    @PutMapping("/form/{id}")
     public ResponseEntity<EvaluationFormDTO> update(@PathVariable Long id,
                                                     @RequestBody EvaluationFormDTO dto) {
         return evaluationFormService.updateEvaluationForm(id, dto)
@@ -73,7 +73,7 @@ public class EvaluationFormController {
 
     // DELETE
     @PreAuthorize("hasRole('QA_SUPERVISOR')")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/form/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean deleted = evaluationFormService.deleteEvaluationForm(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();

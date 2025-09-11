@@ -256,7 +256,7 @@ public class EvaluationFormService {
                                 " not found or not a QA_SuperVisor"));
         form.setSupervisor(supervisor);
 
-        // clear old categories 
+        // clear old categories
         form.getCategories().clear();
 
         // Rebuild categories
