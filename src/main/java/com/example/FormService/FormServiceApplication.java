@@ -29,6 +29,7 @@ public class FormServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(FormServiceApplication.class, args);
+		System.out.println("\n\nApplication Compiled!!!!!\n");
 	}
 
 }
