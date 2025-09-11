@@ -21,7 +21,7 @@ public class EvaluationFormController {
 
 
     // CREATE
-//    @PreAuthorize(value = "hasRole('QA_SUPERVISOR')")
+    @PreAuthorize(value = "hasRole('QA_SUPERVISOR')")
     @PostMapping
     public ResponseEntity<EvaluationFormDTO> create(@RequestBody EvaluationFormRequestDto requestDto) {
         EvaluationFormDTO created = evaluationFormService.createFullEvaluationForm(requestDto);
