@@ -28,6 +28,23 @@ public class EvaluationFormController {
         return ResponseEntity.ok(created);
     }
 
+    // UPDATE
+    @PreAuthorize("hasRole('QA_SUPERVISOR')")
+    @PutMapping("/{id}")
+    public ResponseEntity<EvaluationFormDTO> updateFull(@PathVariable Long id,
+                                                        @RequestBody EvaluationFormRequestDto requestDto) {
+        EvaluationFormDTO updated = evaluationFormService.updateFullEvaluationForm(id, requestDto);
+        return ResponseEntity.ok(updated);
+    }
+
+    // DELETE (full)
+    @PreAuthorize("hasRole('QA_SUPERVISOR')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFull(@PathVariable Long id) {
+        boolean deleted = evaluationFormService.deleteFullEvaluationForm(id);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
     // READ - by ID
     @PreAuthorize("hasAnyRole('QA','QA_SUPERVISOR')")
     @GetMapping("/{id}")
