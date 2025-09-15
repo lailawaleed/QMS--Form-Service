@@ -13,7 +13,12 @@ import com.example.FormService.dto.FactorDto;
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
     CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
+
+    @Mapping(source = "form.id", target = "formId")
+    @Mapping(source = "severity.id", target = "severityId")
+    @Mapping(source = "factors", target = "factors", qualifiedByName = "mapFactors")
     CategoryDto toDto(Category category);
+
     Category toEntity(CategoryDto dto);
 
     @Mapping(source = "factors", target = "factors", qualifiedByName = "mapFactors")
