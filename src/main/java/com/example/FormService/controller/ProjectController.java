@@ -51,7 +51,7 @@ public class ProjectController {
 
     @PreAuthorize("hasRole('QA_SUPERVISOR')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProject(@PathVariable("id") Long id) {
         boolean deleted = projectService.deleteProject(id);
         if (deleted) {
             return ResponseEntity.noContent().build();
