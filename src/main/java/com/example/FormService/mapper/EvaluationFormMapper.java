@@ -1,5 +1,7 @@
 package com.example.FormService.mapper;
 import com.example.FormService.dto.EvaluationFormDTO;
+import com.example.FormService.dto.CategoryDto;
+import com.example.FormService.dto.SuccessCriteriaDto;
 import com.example.FormService.model.Category;
 import com.example.FormService.model.EvaluationForm;
 import com.example.FormService.model.SuccessCriteria;
@@ -13,8 +15,14 @@ public interface EvaluationFormMapper {
 
     @Mapping(source = "project.id", target = "projectId")
     @Mapping(source = "supervisor.id", target = "supervisorId")
-    @Mapping(source = "categories", target = "categoryIds", qualifiedByName = "mapCategoryIds")
-    @Mapping(source = "successCriteria", target = "successCriteriaIds", qualifiedByName = "mapSuccessCriteriaIds")
+    @Mapping(source = "categories", target = "categories", qualifiedByName = "mapCategories")
+    @Mapping(source = "successCriteria", target = "successCriteria", qualifiedByName = "mapSuccessCriteria")
+    @Mapping(source = "nameEn", target = "nameEn")
+    @Mapping(source = "nameAr", target = "nameAr")
+    @Mapping(source = "calculationMethod", target = "calculationMethod")
+    @Mapping(source = "status", target = "status")
+    @Mapping(source = "createdAt", target = "createdAt")
+    @Mapping(source = "updatedAt", target = "updatedAt")
     EvaluationFormDTO toDTO(EvaluationForm form);
 
     @Mapping(target = "project", ignore = true)
@@ -38,5 +46,19 @@ public interface EvaluationFormMapper {
     default List<Long> mapSuccessCriteriaIds(List<SuccessCriteria> criteria) {
         if (criteria == null) return null;
         return criteria.stream().map(SuccessCriteria::getId).collect(Collectors.toList());
+    }
+
+    @Named("mapCategories")
+    default List<CategoryDto> mapCategories(List<Category> categories) {
+        if (categories == null) return null;
+        CategoryMapper mapper = org.mapstruct.factory.Mappers.getMapper(CategoryMapper.class);
+        return categories.stream().map(mapper::toDto).toList();
+    }
+
+    @Named("mapSuccessCriteria")
+    default List<SuccessCriteriaDto> mapSuccessCriteria(List<SuccessCriteria> criteria) {
+        if (criteria == null) return null;
+        SuccessCriteriaMapper mapper = org.mapstruct.factory.Mappers.getMapper(SuccessCriteriaMapper.class);
+        return criteria.stream().map(mapper::toDto).toList();
     }
 }

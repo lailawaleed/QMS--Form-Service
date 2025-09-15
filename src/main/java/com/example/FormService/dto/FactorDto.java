@@ -2,6 +2,7 @@ package com.example.FormService.dto;
 import com.example.FormService.enums.AnswerType;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public record FactorDto(
         Long id,
@@ -10,5 +11,6 @@ public record FactorDto(
         BigDecimal weight,
         AnswerType answerType,
         String notes,
-        String passAnswer
+        String passAnswer,
+        List<AnswerOptionDto> answerOptions
 ){}

@@ -72,8 +72,9 @@ public class EvaluationFormService {
         form.setCreatedAt(now);
         form.setUpdatedAt(now);
 
-        if (dto.categoryIds() != null) {
-            List<Category> categories = categoryRepository.findAllById(dto.categoryIds());
+        if (dto.categories() != null) {
+            List<Long> categoryIds = dto.categories().stream().map(com.example.FormService.dto.CategoryDto::id).toList();
+            List<Category> categories = categoryRepository.findAllById(categoryIds);
             if(!validateSeverityWeight(categories)) {
                 throw new IllegalArgumentException("Severity weights not valid");
             }
@@ -81,12 +82,11 @@ public class EvaluationFormService {
             for(Category category : categories) {
                 category.setForm(form);
             }
-            //form.setCategories(categories);
-            //categories.forEach(c -> c.setForm(form));
         }
 
-        if (dto.successCriteriaIds() != null) {
-            List<SuccessCriteria> criteria = successCriteriaRepository.findAllById(dto.successCriteriaIds());
+        if (dto.successCriteria() != null) {
+            List<Long> criteriaIds = dto.successCriteria().stream().map(com.example.FormService.dto.SuccessCriteriaDto::id).toList();
+            List<SuccessCriteria> criteria = successCriteriaRepository.findAllById(criteriaIds);
             form.setSuccessCriteria(criteria);
             criteria.forEach(c -> c.setEvaluationForm(form));
         }

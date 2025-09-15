@@ -71,6 +71,7 @@ public class EvaluationFormController {
 
     // UPDATE
     @PreAuthorize("hasRole('QA_SUPERVISOR')")
+
     @PutMapping("/form/{id}")
     public ResponseEntity<EvaluationFormDTO> update(@PathVariable Long id,
                                                     @RequestBody EvaluationFormDTO dto) {

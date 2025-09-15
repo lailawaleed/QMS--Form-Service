@@ -22,8 +22,8 @@ public record EvaluationFormDTO(
         Instant createdAt,
         Instant updatedAt,
         Integer supervisorId,
-        List<Long> categoryIds,
-        List<Long> successCriteriaIds
+        List<CategoryDto> categories,
+        List<SuccessCriteriaDto> successCriteria
 ) {
         public EvaluationFormDTO(
                 Long id,
@@ -37,9 +37,9 @@ public record EvaluationFormDTO(
                 CalculationMethod calculationMethod,
                 FormStatus status,
                 Integer supervisorId,
-                List<Long> categoryIds,
-                List<Long> successCriteriaIds
+                List<CategoryDto> categories,
+                List<SuccessCriteriaDto> successCriteria
         ) {
-                this(id, projectId, nameEn, nameAr, calculationMethod, status, null, null, supervisorId, categoryIds, successCriteriaIds);
+                this(id, projectId, nameEn, nameAr, calculationMethod, status, null, null, supervisorId, categories, successCriteria);
         }
 }
