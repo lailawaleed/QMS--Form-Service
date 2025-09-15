@@ -31,27 +31,37 @@ public class EvaluationFormService {
     private final SuccessCriteriaRepository successCriteriaRepository;
     private final EvaluationFormMapper evaluationFormMapper;
 
+    // Helper methods for validation
+    private boolean isArabic(String text) {
+        return text != null && text.matches("^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$");
+    }
+    private boolean isEnglish(String text) {
+        return text != null && text.matches("^[A-Za-z\s]+$");
+    }
+
     // CREATE
     @Transactional
     public EvaluationFormDTO createEvaluationForm(EvaluationFormDTO dto) {
+        if (!isArabic(dto.nameAr())) {
+            throw new IllegalArgumentException("nameAr must contain only Arabic characters.");
+        }
+        if (!isEnglish(dto.nameEn())) {
+            throw new IllegalArgumentException("nameEn must contain only English letters.");
+        }
         EvaluationForm form = evaluationFormMapper.toEntity(dto);
 
-        // Set project
         Project project = projectRepository.findById(dto.projectId())
                 .orElseThrow(() -> new RuntimeException("Project not found"));
         form.setProject(project);
 
-        // Set supervisor
         User supervisor = userRepository.findById(dto.supervisorId())
                 .orElseThrow(() -> new RuntimeException("Supervisor not found"));
         form.setSupervisor(supervisor);
 
-        // Set timestamps
         Instant now = Instant.now();
         form.setCreatedAt(now);
         form.setUpdatedAt(now);
 
-        // Optionally set categories
         if (dto.categoryIds() != null) {
             List<Category> categories = categoryRepository.findAllById(dto.categoryIds());
             if(!validateSeverityWeight(categories)) {
@@ -65,7 +75,6 @@ public class EvaluationFormService {
             //categories.forEach(c -> c.setForm(form));
         }
 
-        // Optionally set success criteria
         if (dto.successCriteriaIds() != null) {
             List<SuccessCriteria> criteria = successCriteriaRepository.findAllById(dto.successCriteriaIds());
             form.setSuccessCriteria(criteria);
@@ -76,14 +85,12 @@ public class EvaluationFormService {
         return evaluationFormMapper.toDTO(saved);
     }
 
-    // READ - by ID
     @Transactional(readOnly = true)
     public Optional<EvaluationFormDTO> getEvaluationForm(Long id) {
         return evaluationFormRepository.findById(id)
                 .map(evaluationFormMapper::toDTO);
     }
 
-    // READ - all
     @Transactional(readOnly = true)
     public List<EvaluationFormDTO> getAllEvaluationForms() {
         return evaluationFormRepository.findAll()
@@ -92,24 +99,25 @@ public class EvaluationFormService {
                 .collect(Collectors.toList());
     }
 
-    // UPDATE
     @Transactional
     public Optional<EvaluationFormDTO> updateEvaluationForm(Long id, EvaluationFormDTO dto) {
+        if (!isArabic(dto.nameAr())) {
+            throw new IllegalArgumentException("nameAr must contain only Arabic characters.");
+        }
+        if (!isEnglish(dto.nameEn())) {
+            throw new IllegalArgumentException("nameEn must contain only English letters.");
+        }
         return evaluationFormRepository.findById(id)
                 .map(form -> {
-                    // MapStruct will update only non-null fields
                     evaluationFormMapper.updateEntityFromDto(dto, form);
-
                     form.setUpdatedAt(Instant.now());
-
-                    EvaluationForm updated = evaluationFormRepository.save(form);
-                    return evaluationFormMapper.toDTO(updated);
+                    EvaluationForm saved = evaluationFormRepository.save(form);
+                    return evaluationFormMapper.toDTO(saved);
                 });
     }
 
 
 
-    // DELETE
     @Transactional
     public boolean deleteEvaluationForm(Long id) {
         return evaluationFormRepository.findById(id)
