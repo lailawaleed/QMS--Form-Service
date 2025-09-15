@@ -40,7 +40,7 @@ public class EvaluationFormController {
     // DELETE
     @PreAuthorize("hasRole('QA_SUPERVISOR')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFull(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteFull(@PathVariable("id") Long id) {
         boolean deleted = evaluationFormService.deleteFullEvaluationForm(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
@@ -74,7 +74,7 @@ public class EvaluationFormController {
     // DELETE
     @PreAuthorize("hasRole('QA_SUPERVISOR')")
     @DeleteMapping("/form/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         boolean deleted = evaluationFormService.deleteEvaluationForm(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
