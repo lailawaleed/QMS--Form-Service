@@ -31,7 +31,7 @@ public class EvaluationFormController {
     // UPDATE
     @PreAuthorize("hasRole('QA_SUPERVISOR')")
     @PutMapping("/{id}")
-    public ResponseEntity<EvaluationFormDTO> updateFull(@PathVariable Long id,
+    public ResponseEntity<EvaluationFormDTO> updateFull(@PathVariable("id") Long id,
                                                         @RequestBody EvaluationFormRequestDto requestDto) {
         EvaluationFormDTO updated = evaluationFormService.updateFullEvaluationForm(id, requestDto);
         return ResponseEntity.ok(updated);

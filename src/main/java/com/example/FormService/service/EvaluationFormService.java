@@ -302,11 +302,10 @@ public class EvaluationFormService {
                                 " not found or not a QA_SuperVisor"));
         form.setSupervisor(supervisor);
 
-        // clear old categories
+        // Clear old categories
         form.getCategories().clear();
 
-        // Rebuild categories
-        List<Category> categories = new ArrayList<>();
+// Add new categories
         for (var categoryReq : requestDto.categories()) {
             Category category = new Category();
             category.setTitle(categoryReq.title());
@@ -315,10 +314,10 @@ public class EvaluationFormService {
             Severity severity = new Severity();
             severity.setId(categoryReq.severityId());
             category.setSeverity(severity);
-            category.setForm(form);
+
+            category.setForm(form); // الربط مهم جداً
 
             // Factors
-            List<Factor> factors = new ArrayList<>();
             for (var factorReq : categoryReq.factors()) {
                 Factor factor = new Factor();
                 factor.setQuestionText(factorReq.questionText());
@@ -329,7 +328,6 @@ public class EvaluationFormService {
                 factor.setCategory(category);
 
                 // Answer options
-                List<AnswerOption> options = new ArrayList<>();
                 for (var optionReq : factorReq.answerOptions()) {
                     AnswerOption option = new AnswerOption();
                     option.setValue(optionReq.value());
@@ -337,20 +335,13 @@ public class EvaluationFormService {
                     option.setPassing(optionReq.isPassing());
                     option.setWeight(optionReq.weight());
                     option.setFactor(factor);
-                    options.add(option);
+
+                    factor.getAnswerOptions().add(option);
                 }
-                factor.setAnswerOptions(options);
-                factors.add(factor);
+                category.getFactors().add(factor);
             }
-            category.setFactors(factors);
-            categories.add(category);
+            form.getCategories().add(category); // بدل ما تعمل set جديدة
         }
-        if(!ensureUniqueCategoryTitles(categories)){
-            throw new IllegalArgumentException("Category titles must be unique");
-        }
-        form.setCategories(categories);
-
-
         EvaluationForm updatedForm = evaluationFormRepository.save(form);
         return evaluationFormMapper.toDTO(updatedForm);
     }
