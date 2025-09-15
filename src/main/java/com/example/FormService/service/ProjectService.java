@@ -1,5 +1,6 @@
 package com.example.FormService.service;
 
+import com.example.FormService.Exceptions.DuplicateNameException;
 import com.example.FormService.dto.ProjectDTO;
 import com.example.FormService.model.Project;
 import com.example.FormService.mapper.ProjectMapper;
@@ -23,6 +24,10 @@ public class ProjectService {
     @PreAuthorize("hasRole('QA_SUPERVISOR')")
     @Transactional
     public ProjectDTO createProject(ProjectDTO projectDTO) {
+        // Check for duplicate project name (case-insensitive)
+        if (projectRepository.findByNameIgnoreCase(projectDTO.name()).isPresent()) {
+            throw new DuplicateNameException("Project name already exists.");
+        }
         Project project = projectMapper.toEntity(projectDTO);
         Project savedProject = projectRepository.save(project);
         return projectMapper.toDTO(savedProject);

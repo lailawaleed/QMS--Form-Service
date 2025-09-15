@@ -1,5 +1,7 @@
 package com.example.FormService.service;
 
+import com.example.FormService.Exceptions.DuplicateNameException;
+import com.example.FormService.Exceptions.InvalidNameException;
 import com.example.FormService.dto.EvaluationFormDTO;
 import com.example.FormService.dto.EvaluationFormRequestDto;
 import com.example.FormService.mapper.EvaluationFormMapper;
@@ -33,20 +35,28 @@ public class EvaluationFormService {
 
     // Helper methods for validation
     private boolean isArabic(String text) {
-        return text != null && text.matches("^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\s]+$");
+        return text != null && text.matches("^[\u0600-\u06FF\s]+$");
     }
     private boolean isEnglish(String text) {
-        return text != null && text.matches("^[A-Za-z\s]+$");
+        // Allow any character except Arabic letters for nameEn
+        return text != null && !text.matches(".*[\u0600-\u06FF]+.*");
     }
 
     // CREATE
     @Transactional
     public EvaluationFormDTO createEvaluationForm(EvaluationFormDTO dto) {
         if (!isArabic(dto.nameAr())) {
-            throw new IllegalArgumentException("nameAr must contain only Arabic characters.");
+            throw new InvalidNameException("Arabic name must contain only Arabic characters.");
         }
         if (!isEnglish(dto.nameEn())) {
-            throw new IllegalArgumentException("nameEn must contain only English letters.");
+            throw new InvalidNameException("English name must contain only English letters.");
+        }
+        // Duplicate name validation
+        if (evaluationFormRepository.findByNameEnIgnoreCase(dto.nameEn()).isPresent()) {
+            throw new DuplicateNameException("Evaluation form English name already exists.");
+        }
+        if (evaluationFormRepository.findByNameArIgnoreCase(dto.nameAr()).isPresent()) {
+            throw new DuplicateNameException("Evaluation form Arabic name already exists.");
         }
         EvaluationForm form = evaluationFormMapper.toEntity(dto);
 
@@ -102,10 +112,10 @@ public class EvaluationFormService {
     @Transactional
     public Optional<EvaluationFormDTO> updateEvaluationForm(Long id, EvaluationFormDTO dto) {
         if (!isArabic(dto.nameAr())) {
-            throw new IllegalArgumentException("nameAr must contain only Arabic characters.");
+            throw new InvalidNameException("Arabic name must contain only Arabic characters.");
         }
         if (!isEnglish(dto.nameEn())) {
-            throw new IllegalArgumentException("nameEn must contain only English letters.");
+            throw new InvalidNameException("English name must contain only English letters.");
         }
         return evaluationFormRepository.findById(id)
                 .map(form -> {
@@ -165,6 +175,19 @@ public class EvaluationFormService {
 
     @Transactional
     public EvaluationFormDTO createFullEvaluationForm(EvaluationFormRequestDto requestDto) {
+        if (!isArabic(requestDto.nameAr())) {
+            throw new InvalidNameException("Arabic name must contain only Arabic characters.");
+        }
+        if (!isEnglish(requestDto.nameEn())) {
+            throw new InvalidNameException("English name must contain only English letters.");
+        }
+        // Duplicate name validation
+        if (evaluationFormRepository.findByNameEnIgnoreCase(requestDto.nameEn()).isPresent()) {
+            throw new DuplicateNameException("Evaluation form English name already exists.");
+        }
+        if (evaluationFormRepository.findByNameArIgnoreCase(requestDto.nameAr()).isPresent()) {
+            throw new DuplicateNameException("Evaluation form Arabic name already exists.");
+        }
         // Create form
         EvaluationForm form = new EvaluationForm();
         form.setNameEn(requestDto.nameEn());
@@ -240,6 +263,12 @@ public class EvaluationFormService {
 
     @Transactional
     public EvaluationFormDTO updateFullEvaluationForm(Long id, EvaluationFormRequestDto requestDto) {
+        if (!isArabic(requestDto.nameAr())) {
+            throw new InvalidNameException("Arabic name must contain only Arabic characters.");
+        }
+        if (!isEnglish(requestDto.nameEn())) {
+            throw new InvalidNameException("English name must contain only English letters.");
+        }
         EvaluationForm form = evaluationFormRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("EvaluationForm not found with id: " + id));
 
