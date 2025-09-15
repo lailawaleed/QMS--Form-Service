@@ -39,10 +39,18 @@ public class EvaluationFormController {
 
     // DELETE
     @PreAuthorize("hasRole('QA_SUPERVISOR')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFull(@PathVariable("id") Long id) {
-        boolean deleted = evaluationFormService.deleteFullEvaluationForm(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    @DeleteMapping({"/{id}", "/form/{id}"})
+    public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+        boolean deleted = evaluationFormService.deleteEvaluationForm(id);
+        if (deleted) {
+            return ResponseEntity.ok().body(new java.util.HashMap<String, String>() {{
+                put("message", "Evaluation form deleted successfully.");
+            }});
+        } else {
+            return ResponseEntity.status(404).body(new java.util.HashMap<String, String>() {{
+                put("error", "Evaluation form not found.");
+            }});
+        }
     }
 
     // READ - by ID
@@ -69,13 +77,5 @@ public class EvaluationFormController {
         return evaluationFormService.updateEvaluationForm(id, dto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    // DELETE
-    @PreAuthorize("hasRole('QA_SUPERVISOR')")
-    @DeleteMapping("/form/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
-        boolean deleted = evaluationFormService.deleteEvaluationForm(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }
