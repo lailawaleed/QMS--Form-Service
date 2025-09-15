@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "category")
+@Table(name = "category" , uniqueConstraints = { @UniqueConstraint(columnNames = "title") })
 public class Category {
 
     @Id
@@ -18,7 +18,7 @@ public class Category {
     @JoinColumn(name = "evaluation_form_id", nullable = false)
     private EvaluationForm form;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "title", nullable = false, unique = true)
     private String title;
 
     @Column(nullable = false, precision = 5, scale = 2)

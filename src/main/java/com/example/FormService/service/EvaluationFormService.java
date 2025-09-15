@@ -215,6 +215,12 @@ public class EvaluationFormService {
         // Categories
         List<Category> categories = new ArrayList<>();
         for (var categoryReq : requestDto.categories()) {
+
+            if(!ensureUniqueCategoryTitles(categories)){
+                throw new IllegalArgumentException("Category titles must be unique");
+            }
+
+            form.setCategories(categories);
             Category category = new Category();
             category.setTitle(categoryReq.title());
             category.setWeight(categoryReq.weight());
@@ -251,6 +257,9 @@ public class EvaluationFormService {
             }
             category.setFactors(factors);
             categories.add(category);
+        }
+        if(!ensureUniqueCategoryTitles(categories)){
+            throw new IllegalArgumentException("Category titles must be unique");
         }
 
         form.setCategories(categories);
@@ -336,7 +345,11 @@ public class EvaluationFormService {
             category.setFactors(factors);
             categories.add(category);
         }
+        if(!ensureUniqueCategoryTitles(categories)){
+            throw new IllegalArgumentException("Category titles must be unique");
+        }
         form.setCategories(categories);
+
 
         EvaluationForm updatedForm = evaluationFormRepository.save(form);
         return evaluationFormMapper.toDTO(updatedForm);
@@ -350,6 +363,15 @@ public class EvaluationFormService {
                     return true;
                 })
                 .orElse(false);
+    }
+    private boolean ensureUniqueCategoryTitles(List<Category> categories){
+        Set<String> titles = new HashSet<>();
+        for(Category category : categories){
+            if(!titles.add(category.getTitle().toLowerCase())){
+                return false;
+            }
+        }
+        return true; // All titles are unique
     }
 
 
